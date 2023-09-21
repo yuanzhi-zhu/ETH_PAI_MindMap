@@ -38,8 +38,8 @@
 - $\bar{\Sigma}=\left(\sigma_{n}^{-2} \mathbf{X}^{T} \mathbf{X}+\sigma_p^{-2}\mathbf{I}\right)^{-1}$
 
 #### Making Predictions in BLR(Using properties of multivariate Gaussian)
-##### $p\left(y^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right) = \int p(y^{*}|x^{*},w)p(w|\mathbf{X}, \mathbf{y})dw$
-- <span style="color:red">Likelihood</span>($p(y^{*}|x^{*},w)$) + <span style="color:red">Posterior</span>($p(w|\mathbf{X}, \mathbf{y})$) $\Longrightarrow$ <span style="color:red">Predictions</span>($p\left(y^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right)$)
+##### $p\left(y^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right) = \int p(y^{*}|x^{*},\mathbf{w})p(\mathbf{w}|\mathbf{X}, \mathbf{y})d\mathbf{w}$
+- <span style="color:red">Likelihood</span>($p(y^{*}|x^{*},\mathbf{w})$) + <span style="color:red">Posterior</span>($p(\mathbf{w}|\mathbf{X}, \mathbf{y})$) $\Longrightarrow$ <span style="color:red">Predictions</span>($p\left(y^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right)$)
 ##### $p\left(f^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right)=\mathcal{N}\left(\bar{\mu}^{T} \mathbf{x}^{*}, \mathbf{x}^{* T} \bar{\Sigma} \mathbf{x}^{*}\right)$, where $\mathbf{x}^*$ is test point and $f^{*}=\mathbf{w}^{T} \mathbf{x}^{*}$
 ##### $p\left(y^{*} \mid \mathbf{X}, \mathbf{y}, \mathbf{x}^{*}\right)=\mathcal{N}\left(\bar{\mu}^{T} \mathbf{x}^{*}, \mathbf{x}^{* T} \bar{\Sigma} \mathbf{x}^{*}+\sigma_{n}^{2}\right)$
 ##### $\mathbf{x}^{* T} \bar{\Sigma} \mathbf{x}^{*}$: Uncertainty about $f^*$(<span style="color:blue">epistemic</span>)
@@ -60,16 +60,16 @@
 
 #### Models
 ##### Variables 
-- $X_1,...,X_T$: Location of object being tracked
-- $Y_1,...,Y_T$: Observations
-- $P(X_1)$: Prior belief
-##### $P(X_{t+1} | X_t)$ <span style="color:blue">Motion(Transition) model</span>: $\mathbf{X}_{t+1}=\mathbf{F} \mathbf{X}_{t}+\varepsilon_{t}$ where $\varepsilon_{t} \in \mathcal{N}\left(0, \Sigma_{x}\right)$
-##### $P(Y_{t} | X_t)$ <span style="color:blue">Sensor(Observation) model</span>: $\mathbf{Y}_{t}=\mathbf{H X}_{t}+\eta_{t}$ where $\eta_{t} \in \mathcal{N}\left(0, \Sigma_{y}\right)$
+- $\mathbf{x}_1,...,\mathbf{x}_T$: Location of object being tracked
+- $\mathbf{y}_1,...,\mathbf{y}_T$: Observations
+- $P(\mathbf{x}_1)$: Prior belief
+##### $P(\mathbf{x}_{t+1} | \mathbf{x}_t)$ <span style="color:blue">Motion(Transition) model</span>: $\mathbf{x}_{t+1}=\mathbf{F} \mathbf{x}_{t}+\varepsilon_{t}$ where $\varepsilon_{t} \in \mathcal{N}\left(0, \Sigma_{x}\right)$
+##### $P(\mathbf{y}_{t} | \mathbf{x}_t)$ <span style="color:blue">Sensor(Observation) model</span>: $\mathbf{y}_{t}=\mathbf{H x}_{t}+\eta_{t}$ where $\eta_{t} \in \mathcal{N}\left(0, \Sigma_{y}\right)$
 
 #### Bayesian Filtering
-#####  <span style="color:blue">Conditioning(Belief)</span>: $P(X_t|y_{1:t}) = \frac{1}{Z} P(X_{t} | y_{1:t-1})P(y_{t} | X_t)$
+#####  <span style="color:blue">Conditioning(Belief)</span>: $P(\mathbf{x}_t|\mathbf{y}_{1:t}) = \frac{1}{Z} P(\mathbf{x}_{t} | \mathbf{y}_{1:t-1})P(\mathbf{y}_{t} | \mathbf{x}_t)$
 - Conditioning is composed of Prediction and Observation
-#####  <span style="color:blue">Prediction</span>: $\int P(X_{t+1} | X_t)P(X_t|y_{1:t})dx_t$
+#####  <span style="color:blue">Prediction</span>: $\int P(\mathbf{x}_{t+1} | \mathbf{x}_t)P(\mathbf{x}_t|\mathbf{y}_{1:t})d\mathbf{x}_t$
 - Prediction is composed of Motion and Conditioning
 ##### <span style="color:red">Given Motion, Observation and Prior Belief, one can calculate Prediction and Conditioning iterable(Belief)</span>
 
@@ -81,7 +81,7 @@
   $\boldsymbol{\Sigma}_{t+1}=\left(\mathbf{I}-\mathbf{K}_{k+1} \mathbf{H}\right)\left(\mathbf{F} \boldsymbol{\Sigma}_{t} \mathbf{F}^{\top}+\boldsymbol{\Sigma}_{x}\right)$
 ##### Kalman Gain:
 - $\mathbf{K}_{t+1}=\left(\mathbf{F} \Sigma_{t} \mathbf{F}^{T}+\Sigma_{x}\right) \mathbf{H}^{T}\left(\mathbf{H}\left(\mathbf{F} \Sigma_{t} \mathbf{F}^{T}+\Sigma_{x}\right) \mathbf{H}^{T}+\Sigma_{y}\right)^{-1}$
-- Can compute $\boldsymbol{\Sigma}_{t}$ and $\mathbf{K}_{t}$ offline (they do not depend on the variables $x_t$ and $y_t$)
+- Can compute $\boldsymbol{\Sigma}_{t}$ and $\mathbf{K}_{t}$ offline (they do not depend on the variables $\mathbf{x}_t$ and $\mathbf{y}_t$)
 
 #### Example: 1D Random Walk 
 
@@ -91,7 +91,7 @@
 ### Non-linear Functions $\rightarrow$ Kernelized Bayesian Linear Regression: **Gaussian Processes**
 
 #### Kernel Trick
-##### Reason
+##### Reasons
 - Applying linear method (like BLR) on nonlinearly transformed data.
   However, computational cost increases with dimensionality of the feature space!
 ##### $\mathbf{x}_i^T \mathbf{x}_j \Longrightarrow k(\mathbf{x}_i,\mathbf{x}_j)$
@@ -104,19 +104,19 @@
 
 #### Gaussian Process(GP) Definition
 ##### An (infinite) set of random variables, indexed by some set X i.e., there exists functions
-- <span style="color:blue">mean function</span> $\mu: X \rightarrow \mathbb{R} $ 
+- <span style="color:blue">mean function</span> $\mu: \mathbf{X} \rightarrow \mathbb{R} $ 
 - <span style="color:blue">covariance (kernel) function</span> $k: X \times X \rightarrow \mathbb{R}$
 ##### GP Marginals
-- For specific input $x'$, $p(f(x'))=G P\left(f ; \mu(x^{\prime}), k(x^{\prime},x^{\prime})\right)=\mathcal{N}(f(x') ; \mu(x') , k(x', x'))$
+- For specific input $\mathbf{x}'$, $p(f(\mathbf{x}'))=G P\left(f ; \mu(\mathbf{x}^{\prime}), k(\mathbf{x}^{\prime},\mathbf{x}^{\prime})\right)=\mathcal{N}(f(\mathbf{x}') ; \mu(\mathbf{x}') , k(\mathbf{x}', \mathbf{x}'))$
 ##### Kernels
 ###### Properties
 - Symmetric
 - Positive Definite
 ###### Species
-- Linear kernel: $k(x, x') = x^Tx'$
-- Linear kernel with features: $k(x, x') = \phi(x)^T\phi(x')$, where $\Phi(x)$ can be polynomial, sine, etc
-- Squared exponential (aka RBF, Gaussian) kernel: $k\left(x, x^{\prime}\right)=\exp \left(-|| x-x^{\prime}||_{2}^{2} / h^{2}\right)$
-- Exponential kernel: $k\left(x, x^{\prime}\right)=\exp \left(-|| x-x^{\prime}||_{2} / h\right)$
+- Linear kernel: $k(\mathbf{x}, \mathbf{x}') = \mathbf{x}^T\mathbf{x}'$
+- Linear kernel with features: $k(\mathbf{x}, \mathbf{x}') = \phi(\mathbf{x})^T\phi(\mathbf{x}')$, where $\Phi(\mathbf{x})$ can be polynomial, sine, etc
+- Squared exponential (aka RBF, Gaussian) kernel: $k\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=\exp \left(-|| \mathbf{x}-\mathbf{x}^{\prime}||_{2}^{2} / h^{2}\right)$
+- Exponential kernel: $k\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=\exp \left(-|| \mathbf{x}-\mathbf{x}^{\prime}||_{2} / h\right)$
 - Matérn kernel: $k\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=\frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2 \nu}\left\|\mathbf{x}-\mathbf{x}^{\prime}\right\|_{2}}{\rho}\right)^{\nu} K_{\nu}\left(\frac{\sqrt{2 \nu}\left\|\mathbf{x}-\mathbf{x}^{\prime}\right\|_{2}}{\rho}\right)$
 ###### Composition Rules 
 - $k\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=k_{1}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)+k_{2}\left(\mathbf{x}, \mathbf{x}^{\prime}\right)$
@@ -126,8 +126,8 @@
 
 #### Making Predictions with GPs
 ##### Suppose $p(f)=G P(f ; \mu, k)$ (prior by selecting $\mu$ and $k$)
-##### Observe $y_{i}=f\left(\mathbf{x}_{i}\right)+\epsilon_{i} \quad A=\left\{\mathbf{x}_{1}, \ldots, \mathbf{x}_{m}\right\}$
-##### $p\left(f \mid \mathbf{x}_{1}, \ldots, \mathbf{x}_{m}, y_{1}, \ldots, y_{m}\right)=G P\left(f ; \mu^{\prime}, k^{\prime}\right)$
+##### Observe $\mathbf{y}_{i}=f\left(\mathbf{x}_{i}\right)+\epsilon_{i} \quad A=\left\{\mathbf{x}_{1}, \ldots, \mathbf{x}_{m}\right\}$
+##### $p\left(f \mid \mathbf{x}_{1}, \ldots, \mathbf{x}_{m}, \mathbf{y}_{1}, \ldots, \mathbf{y}_{m}\right)=G P\left(f ; \mu^{\prime}, k^{\prime}\right)$
 - $\begin{aligned} \mu^{\prime}(\mathbf{x}) &=\mu(\mathbf{x})+\mathbf{k}_{x, A}\left(\mathbf{K}_{A A}+\sigma^{2} \mathbf{I}\right)^{-1}\left(\mathbf{y}_{A}-\mu_{A}\right) \\ k^{\prime}\left(\mathbf{x}, \mathbf{x}^{\prime}\right) &=k(\mathbf{x}, \mathbf{x'})-\mathbf{k}_{x, A}\left(\mathbf{K}_{A A}+\sigma^{2} \mathbf{I}\right)^{-1} \mathbf{k}_{x^{\prime}, A}^{T} \end{aligned}$
 ##### Properties
 - Closed form formulas for prediction
@@ -151,7 +151,7 @@
 ##### Kernel function approximations (RFFs, QFFs, …)
 ##### <span style="color:blue">Inducing point methods</span> (SoR, FITC, VFE etc.)
 - “Summarize” data via function values of f at a set u of m inducing points
-  $p\left(\mathbf{f}^{*}, \mathbf{f}\right)=\int p\left(\mathbf{f}^{*}, \mathbf{f}, \mathbf{u}\right) d \mathbf{u}=\int p\left(\mathbf{f}^{*}, \mathbf{f} \mid \mathbf{u}\right) p(\mathbf{u}) d \mathbf{u}$
+  $p\left(f^{*}, f\right)=\int p\left(\mathbf{f}^{*}, \mathbf{f}, \mathbf{u}\right) d \mathbf{u}=\int p\left(\mathbf{f}^{*}, \mathbf{f} \mid \mathbf{u}\right) p(\mathbf{u}) d \mathbf{u}$
 - Key idea: Approximate by
   $p\left(\mathbf{f}^{*}, \mathbf{f}\right) \approx q\left(\mathbf{f}^{*}, \mathbf{f}\right)=\int q\left(\mathbf{f}^{*} \mid \mathbf{u}\right) q(\mathbf{f} \mid \mathbf{u}) p(\mathbf{u}) d \mathbf{u}$
 - $K_{u,u}$ has much smaller size
@@ -176,7 +176,7 @@
 - Predictive distribution for test point $\mathbf{x}^{*}$:
   $p\left(y^{*} \mid \mathbf{x}^{*}, \mathbf{x}_{1: n}, y_{1: n}\right) \approx \int \sigma\left(y^{*} \mathbf{w}^{T} \mathbf{x}\right) \mathcal{N}\left(\mathbf{w} ; \hat{\mathbf{w}}, \Lambda^{-1}\right) d \mathbf{w} =\int \sigma\left(y^{*} f\right) \mathcal{N}\left(f ; \hat{\mathbf{w}}^{T} \mathbf{x}^{*}, \mathbf{x}^{* T} \Lambda^{-1} \mathbf{x}^{*}\right) d f$
 
-#### **Variational Inference**: $q^{*} \in \arg \min _{q \in \mathcal{Q}} K L(q \| p)$
+#### **Variational Inference** (see [this blog](https://yuanzhi-zhu.github.io/2023/05/25/Bayesian-Posterior-Sampling/)): $q^{*} \in \arg \min _{q \in \mathcal{Q}} K L(q \| p)$
 ##### Variational family: 
 - Gaussian distributions
 - Gaussians with diagonal covariance $\mathcal{Q}=\{q(\theta)=\mathcal{N}(\theta ; \mu, \operatorname{diag}([\sigma]))\}$
@@ -185,12 +185,12 @@
 #### **KL-Divergence**: $K L(q \| p)=\int q(\theta) \log \frac{q(\theta)}{p(\theta)} d \theta$
 ##### Properties
 - Non-negative
-- Zero if and only if P & Q agree almost everywhere
+- Zero if and only if $p$ & $q$ agree almost everywhere
 - Not generally symmetric
 ##### Example: KL Divergence between Gaussians
 ##### Minimizing KL Divergence
 - $\arg \min _{q} K L(q \| p)=\arg \min _{q} \int q(\theta) \log \frac{q(\theta)}{\frac{1}{Z} p(\theta, y)} d \theta =\arg \max _{q} \{\mathbb{E}_{\theta \sim q(\theta)}[\log p(\theta, y)]+H(q)\}=\arg \max _{q} \{\mathbb{E}_{\theta \sim q(\theta)}[\log p(y \mid \theta)]-K L(q \| p(\cdot))\}$
-##### Maximizing Lower Bound on Evidence: “ELBO” (Evidence lower bound) 
+##### Maximizing Lower Bound on Evidence: “ELBO” (Evidence Lower BOund) 
 - $\log p(y)=\log \int p(y \mid \theta) p(\theta) d \theta \geq \mathbb{E}_{\theta \sim q}\left[\log \left(p(y \mid \theta) \frac{p(\theta)}{q(\theta)}\right)\right] d \theta =\mathbb{E}_{\theta \sim q}[\log p(y \mid \theta)]-K L(q \| p(\cdot))$
 ##### Inference as Optimization
 - Task: Infer the most close $q = \arg \min _{q \in \mathcal{Q}} K L(q \| p(\cdot \mid y))$
@@ -202,7 +202,7 @@
 - Example: Reparametrizing the ELBO for B. Log. Reg
 
 
-#### **Markov-Chain Monte Carlo(MCMC)**
+#### **Markov-Chain Monte Carlo(MCMC)** (see [this blog](https://yuanzhi-zhu.github.io/2023/06/26/Introduction-to-MCMC/))
 ##### Key Idea: $\mathbb{E}_{\theta \sim p(\cdot \mid x_{1:n},y_{1:n})}[f(\theta)] \approx \frac{1}{N} \sum_{i=1}^{N} f\left(\theta^{i}\right)$, where $f\left(\theta\right) = p(y^* \mid x^*,\theta)$
 ##### Given Unnormalized Distribution: $P(x) = \frac{1}{Z}Q(x)$
 - Q(X) efficient to evaluate, but normalizer Z intractable
